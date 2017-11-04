@@ -283,9 +283,13 @@ static void pie_process_dequeue(struct Qdisc *sch, struct sk_buff *skb)
 			if (q->vars.avg_dq_rate == 0)
 				q->vars.avg_dq_rate = count;
 			else
+				/* weight = DQ_THRESHOLD / 2^16
+				 *        = 2^14 / 2^16
+				 *        = 1 / 4
+				 */
 				q->vars.avg_dq_rate =
 				    (q->vars.avg_dq_rate -
-				     (q->vars.avg_dq_rate >> 3)) + (count >> 3);
+				     (q->vars.avg_dq_rate >> 2)) + (count >> 2);
 
 			/* If the queue has receded below the threshold, we hold
 			 * on to the last drain rate calculated, else we reset
