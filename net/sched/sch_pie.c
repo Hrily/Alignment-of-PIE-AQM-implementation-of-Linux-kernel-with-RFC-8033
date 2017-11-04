@@ -31,7 +31,7 @@
 #include <net/pkt_sched.h>
 #include <net/inet_ecn.h>
 
-#define QUEUE_THRESHOLD 10000
+#define QUEUE_THRESHOLD 16384   /* 16KB i.e. 2^14 */
 #define DQCOUNT_INVALID -1
 #define MAX_PROB  0xffffffff
 #define PIE_SCALE 8
@@ -80,9 +80,9 @@ static void pie_params_init(struct pie_params *params)
 {
 	params->alpha = 2;
 	params->beta = 20;
-	params->tupdate = usecs_to_jiffies(30 * USEC_PER_MSEC);	/* 30 ms */
+	params->tupdate = usecs_to_jiffies(15 * USEC_PER_MSEC);	/* 15 ms */
 	params->limit = 1000;	/* default of 1000 packets */
-	params->target = PSCHED_NS2TICKS(20 * NSEC_PER_MSEC);	/* 20 ms */
+	params->target = PSCHED_NS2TICKS(15 * NSEC_PER_MSEC);	/* 15 ms */
 	params->ecn = false;
 	params->bytemode = false;
 }
@@ -91,8 +91,8 @@ static void pie_vars_init(struct pie_vars *vars)
 {
 	vars->dq_count = DQCOUNT_INVALID;
 	vars->avg_dq_rate = 0;
-	/* default of 100 ms in pschedtime */
-	vars->burst_time = PSCHED_NS2TICKS(100 * NSEC_PER_MSEC);
+	/* default of 150 ms in pschedtime */
+	vars->burst_time = PSCHED_NS2TICKS(150 * NSEC_PER_MSEC);
 }
 
 static bool drop_early(struct Qdisc *sch, u32 packet_size)
