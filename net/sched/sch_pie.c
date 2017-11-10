@@ -156,16 +156,16 @@ static int pie_qdisc_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 	struct pie_sched_data *q = qdisc_priv(sch);
 	bool enqueue = false;
 
-	if (!p->vars.active && 
+	if (!q->vars.active && 
 			qdisc_qlen(sch) >= sch->limit / 3) {
 		/* If queue is over certain threshold,
 		 * turn on PIE.
 		 */
 		pie_vars_init(&q->vars);
-		p->vars.qdelay_old = 0;
-		p->vars.prob = 0;
-		p->vars.dq_count = 0;
-		p->vars.dq_tstamp = psched_get_time();
+		q->vars.qdelay_old = 0;
+		q->vars.prob = 0;
+		q->vars.dq_count = 0;
+		q->vars.dq_tstamp = psched_get_time();
 	}
 
 	if (unlikely(qdisc_qlen(sch) >= sch->limit)) {
